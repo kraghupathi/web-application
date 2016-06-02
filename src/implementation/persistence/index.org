@@ -289,11 +289,11 @@ class TestName(TestCase):
 
     def test_name_type(self):
         print "test_name_type"
-        new_name = Name("John")
+        new_name = Name("raghu")
         # correct name
-        self.assertEqual(new_name.value, "John")
+        self.assertEqual(new_name.value, "raghu")
         # incorrect name
-        self.assertRaises(TypeError, Name, "123dasd")
+        self.assertRaises(TypeError, Name, "123abcd")
 #+END_SRC
 
 
@@ -338,11 +338,11 @@ class TestEmail(TestCase):
 
     def test_email_type(self):
         print "test_email_type"
-        new_email = Email("smith@gmail.com")
+        new_email = Email("raghu@gmail.com")
         # correct name
-        self.assertEqual(new_email.value, "smith@gmail.com")
+        self.assertEqual(new_email.value, "raghu@gmail.com")
         # incorrect name
-        self.assertRaises(TypeError, Email, "@@@@smithgmail.com")
+        self.assertRaises(TypeError, Email, "@@@@raghugmail.com")
 #+END_SRC
 
 
@@ -424,18 +424,12 @@ class TestUser(TestCase):
         db.drop_all()
         tearDown()
 
-    def test_user_creation_without_role(self):
-        print "test_user_creation_without_role"
-        with self.assertRaises(AttributeRequired):
-            user = User(name="Robin Smith", 
-                            email="smith@gmail.com")
-
     def test_user_creation_with_role(self):
         print "test_user_creation_with_role"
         #role = Role("admin")
         #role.save()
-        user = User(name="Robin Smith", 
-                    email="smith@gmail.com",
+        user = User(name="raghu pathi", 
+                    email="raghu@gmail.com",
                     role=Role.get_by_id(1))
         user.save()
         self.assertEqual(user.role.name, "admin")   
@@ -459,8 +453,8 @@ class TestUser(TestCase):
         print "test_set_roles_to_user"
         #a_role = Role("admin")
         #role.save()
-        user = User(name="Robin Smith", 
-                    email="smith@gmail.com",
+        user = User(name="raghu pathi", 
+                    email="raghu@gmail.com",
                     role=Role.get_by_id(1))
         user.save()
         #role = Role("user")
@@ -531,8 +525,8 @@ class TestUser(TestCase):
         print "test_user_get_all"
         #role = Role("Admin")
         #role.save()
-        user = User(name="Termite", 
-                    email="tremite@gmail.com",
+        user = User(name="abcd", 
+                    email="abcd@gmail.com",
                     role=Role.get_by_id(1))
         user.save()
         users = User.get_all()
@@ -556,12 +550,12 @@ class TestUser(TestCase):
         print "test_get_user_by_id"
         #role = Role("admin")
         #role.save()
-        user = User(name="Robin Smith", 
-                    email="smith@gmail.com",
+        user = User(name="raghu pathi", 
+                    email="raghu@gmail.com",
                     role=Role.get_by_id(1))
         user.save()
         self.assertEqual(user.get_by_id(2).role.name, "admin")
-        self.assertEqual(user.get_by_id(2).name, "Robin Smith")
+        self.assertEqual(user.get_by_id(2).name, "raghu pathi")
 #+END_SRC
 
 ***** Test updateRole: Role -> Role
@@ -570,19 +564,19 @@ class TestUser(TestCase):
         print "test_update_role"
         #a_role = Role("admin")
         #a_role.save()
-        user = User(name="Robin Smith", 
-                    email="smith@gmail.com",
+        user = User(name="raghu pathi", 
+                    email="raghu@gmail.com",
                     role=Role.get_by_id(1))
         user.save()
         u1 = User.get_by_id(1)
         print u1.to_client()
         #u_role = Role("user")
         #u_role.save()
-        u1.update(name="Duddley Rod", 
-                  email="duddley@gmail.com",
+        u1.update(name="john rod", 
+                  email="john@gmail.com",
                   role=Role.get_by_id(2))
         print u1.to_client()
-        self.assertEqual(u1.get_by_id(1).name, "Duddley Rod")
+        self.assertEqual(u1.get_by_id(1).name, "john rod")
         self.assertEqual(u1.get_by_id(1).role.name, "user")
 #+END_SRC
 
@@ -714,13 +708,6 @@ class TestRole(TestCase):
         }
 
 #+END_SRC
-
-
-
-
-
-
-
 ** Session
    
 *** Definition
@@ -760,8 +747,8 @@ class TestSession(TestCase):
     def test_session_creation(self):
         print "test_session_creation"
         #system = setUp()
-        user = User(name="Robin Smith", 
-                    email="smith@gmail.com",
+        user = User(name="raghu pathi", 
+                    email="raghu@gmail.com",
                     role=Role.get_by_id(1))
         session = Session(user=user)
         self.assertEqual(session.user.role, Role.get_by_id(1))
@@ -822,8 +809,6 @@ class TestSession(TestCase):
             'session': self.user.to_client()
         }
 #+END_SRC
-
-
 ** System
 *** Definition
 #+BEGIN_SRC python :tangle ../../src/db.py :eval no
@@ -960,26 +945,6 @@ class TestSystem(TestCase):
         with self.assertRaises(NotAuthorizedError):
             system.add_user(user, user_session)
         #tearDown(system)
-
-    def test_add_user_session_invalid(self):
-        global system
-        #system = setUp()
-        print "test_add_user_session_invalid"
-        user = User(name = "abcdef", email = "abcdef@gmail.com", role = Role.get_by_id(2))
-        user1 = User(name = "asdfg", email = "asdf@gmail.com", role = Role.get_by_id(1))
-        #admin_session_list = filter(lambda x: x.user.role == Role.admin, system.session_set)
-        #admin_session = admin_session_list[0]
-        #system.add_user(user, admin_session)
-        #system.login(user)
-        #user_session_list = filter(lambda x: x.user.role == Role.user, system.session_set)
-        #user_session = user_session_list[0]
-        session = Session(user = user1)
-        #global system
-        with self.assertRaises(ConstraintError):
-            system.add_user(user, session)
-        #tearDown(system)
-
-
 #+END_SRC
 
 #+BEGIN_SRC python :tangle ../../src/db.py :eval no
@@ -1074,29 +1039,6 @@ class TestSystem(TestCase):
         with self.assertRaises(ConstraintError):
             system.del_user(user, admin_session)
         #tearDown(system)
-
-    def test_delete_user_session_invalid(self):
-        global system
-        #system = setUp()
-        print "test_delete_user_session_invalid"
-        user = User(name = "abcdef", email = "abcdef@gmail.com", role = Role.get_by_id(2))
-        user1 = User(name = "asdfg", email = "asdf@gmail.com", role = Role.get_by_id(1))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        system.login(user)
-        #system.add_user(user1, admin_session)
-        #user_session_list = filter(lambda x: x.user.role == Role.user, system.session_set)
-        #user_session = user_session_list[0]
-        session = Session(user = user1)
-        #global system
-        with self.assertRaises(ConstraintError):
-            system.add_user(user, session)
-        #tearDown(system)
-
-
 #+END_SRC
     
 **** show_users
@@ -1130,22 +1072,6 @@ class TestSystem(TestCase):
         check_user_set = system.show_users(current_session)
         self.assertEquals(check_user_set, system.user_set)
         #tearDown(system)
-
-    def test_show_users_invalid(self):
-        print "test_show_users_invalid"
-        global system
-        #system = setUp()
-        user = User(name = "abcdef", email = "abcdef@gmail.com", role = Role.get_by_id(2))
-        #admin_sessions_list = filter(lambda x: x.user.role == Role.admin, system.session_set)
-        #admin_session = admin_sessions_list[0]
-        #system.add_user(user,admin_session)
-        #system.login(user)
-        current_session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            system.show_users(current_session)
-        #tearDown(system)
-
 #+END_SRC
 
 **** get_users_from_database
@@ -1202,23 +1128,6 @@ class TestSystem(TestCase):
         with self.assertRaises(ConstraintError):
             email_check = system.get_user_by_email("abcbdbejf@gmail.com",admin_session)
         #tearDown(system)
-
-    def test_get_user_by_email_invalid_session(self):
-        print "test_get_user_by_email_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_user_by_email("abcdf@gmail.com",session)
-        #tearDown(system)
-
 #+END_SRC
 
 **** make_user
@@ -1278,20 +1187,6 @@ class TestSystem(TestCase):
         new_user_set_length = len(system.user_set)
         self.assertEquals(old_user_set_length + 1, new_user_set_length)
         #tearDown(system)
-
-    def test_make_user_session_invalid_session(self):
-        global system
-        #system = setUp()
-        print "test_make_user_session_admin"
-        old_users=system.user_set
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        #admin_session_list = filter(lambda x: not x.user.role == Role.admin, system.session_set)
-        #admin_session = admin_session_list.pop()
-        session = Session(user = user)
-        with self.assertRaises(ConstraintError):
-            system.make_user("abc", "abcd@gmail.com", Role.get_by_id(1), session)
-        #tearDown(system)
-
 #+END_SRC
 **** get_email_of_user
 ***** Implementation
@@ -1326,38 +1221,6 @@ class TestSystem(TestCase):
         user_check = system.get_email_of_user(user, admin_session)
         self.assertEquals( user_check , user.email)
         #tearDown(system)
-    
-    def test_get_email_of_user_invalid_user(self):
-        #system = setUp()
-        global system
-        print "test_get_email_of_user_invalid_user"
-        user = User(name = "ancd", email = "ancd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #system.add_user(user, admin_session)
-        #system.login(user)
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_email_of_user(user ,admin_session)
-        #tearDown(system)
-    
-    def test_get_email_of_user_invalid_session(self):
-        print "test_get_email_of_user_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_email_of_user(user ,session)
-        #tearDown(system)
-
 #+END_SRC    
 
 **** get_name_of_user
@@ -1394,38 +1257,6 @@ class TestSystem(TestCase):
         user_check = system.get_name_of_user(user, admin_session)
         self.assertEquals( user_check , user.name)
         #tearDown(system)
-    
-    def test_get_name_of_user_invalid_user(self):
-        print "test_get_name_of_user_invalid_user"
-        #system = setUp()
-        global system
-        user = User(name = "ancd", email = "ancd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #system.add_user(user, admin_session)
-        #system.login(user)
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_name_of_user(user ,admin_session)
-        #tearDown(system)
-    
-    def test_get_name_of_user_invalid_session(self):
-        print "test_get_name_of_user_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_name_of_user(user ,session)
-        #tearDown(system)
-        
 #+END_SRC    
 
 
@@ -1501,40 +1332,6 @@ class TestSystem(TestCase):
         user_check = system.get_email_of_user(user, admin_session)
         self.assertEquals(user_check, user.email)
         #tearDown(system)       
-    
-    def test_set_email_of_user_invalid_session(self):
-        print "test_set_email_of_user_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.set_email_of_user(user, "abcdef@gmail.com", session)
-        #tearDown(system)
-    
-
-    def test_set_email_of_user_invalid_email(self):
-        print "test_set_name_of_user_invalid_email"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.set_email_of_user(user, "abcd@gmail.com", admin_session)
-        #tearDown(system)
-        
 #+END_SRC
 
 
@@ -1566,9 +1363,6 @@ class TestSystem(TestCase):
             raise ConstraintError("Invalid Session")
 
 #+END_SRC
-
-
-
 **** get_role_of_user
 ***** Implementation
 #+BEGIN_SRC python :tangle ../../src/db.py :eval no
@@ -1603,37 +1397,6 @@ class TestSystem(TestCase):
         user_check = system.get_role_of_user(user, admin_session)
         self.assertEquals( user_check , user.role)
         #tearDown(system)
-    
-    def test_get_role_of_user_invalid_user(self):
-        print "test_get_role_of_user_invalid_user"
-        #system = setUp()
-        global system
-        user = User(name = "ancd", email = "ancd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #system.add_user(user, admin_session)
-        #system.login(user)
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_role_of_user(user ,admin_session)
-        #tearDown(system)
-    
-    def test_get_role_of_user_invalid_session(self):
-        print "test_get_role_of_user_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "abcd", email = "abcd@gmail.com", role = Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        session = Session(user = user)
-        
-        with self.assertRaises(ConstraintError):
-            email_check = system.get_role_of_user(user ,session)
-        #tearDown(system)       
 #+END_SRC    
 
 
@@ -1670,17 +1433,6 @@ class TestSystem(TestCase):
         new_session_set_length = len(system.session_set)
         self.assertEquals(old_session_set_length + 1, new_session_set_length)
         #tearDown(system)
-
-    def test_login_invalid(self):
-        print "test_login_invalid"
-        global system
-        #system = setUp()
-        user = User(name = "abcdef", email = "abcdef@gmail.com", role =
-        Role.get_by_id(2))
-        with self.assertRaises(ConstraintError):
-            system.login(user)
-        #tearDown(system)
-
 #+END_SRC        
 
 
@@ -1728,54 +1480,6 @@ class TestSystem(TestCase):
         new_session_set_length = len(system.session_set)
         self.assertEquals(old_session_set_length , new_session_set_length)
         #tearDown(system)
-
-    def test_logout_invalid_user(self):
-        print "test_logout_invalid_user"
-        global system
-        #system = setUp()
-        user = User(name = "abcdefghi", email = "abcdefghi@gmail.com", role =
-        Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #system.add_user(user, admin_session)
-        #old_session_set_length = len(system.session_set)
-        #system.login(user)
-        #user_session_list = filter(lambda x: x.user.email == user.email,
-        #system.session_set)
-        #user_session = user_session_list[0]
-        #system.logout(user, user_session)
-        #new_session_set_length = len(system.session_set)
-        #self.assertEquals(old_session_set_length , new_session_set_length)
-        with self.assertRaises(ConstraintError):
-            system.logout(user, admin_session)
-        #tearDown(system)
-
-    def test_logout_invalid_session(self):
-        print "test_logout_invalid_session"
-        global system
-        #system = setUp()
-        user = User(name = "abcdefghi", email = "abcdefghi@gmail.com", role =
-        Role.get_by_id(2))
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        system.add_user(user, admin_session)
-        #old_session_set_length = len(system.session_set)
-        system.login(user)
-        #user_session_list = filter(lambda x: x.user.email == user.email,
-        #system.session_set)
-        #user_session = user_session_list[0]
-        #system.logout(user, user_session)
-        #new_session_set_length = len(system.session_set)
-        #self.assertEquals(old_session_set_length , new_session_set_length)
-        session = Session(user = user)
-        with self.assertRaises(ConstraintError):
-            system.logout(user, session)
-        #tearDown(system)
-
 #+END_SRC
 
 **** add_session
@@ -1856,50 +1560,6 @@ class TestSystem(TestCase):
         new_session_set_length = len(system.session_set)
         self.assertEquals(new_session_set_length, old_session_set_length-1)
         #tearDown(system)
-
-    def test_del_session_invalid_user(self):
-        print "test_delete_session_invalid_user"
-        #system = setUp()
-        global system
-        user = User(name = "asddghj", email = "asljfbd@gmail.com", role = Role.get_by_id(2))
-        session = Session(user = user)
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #global system
-        #system.add_user(user,admin_session)
-        #old_session_set_length = len(system.session_set)
-        #system.add_session(user)
-        #system.del_session(user)
-        #new_session_set_length = len(system.session_set)
-        #self.assertEquals(new_session_set_length, old_session_set_length)
-        with self.assertRaises(ConstraintError):
-            system.del_session(user, admin_session)
-        #tearDown(system)
-
-    def test_del_session_invalid_session(self):
-        print "test_delete_session_invalid_session"
-        #system = setUp()
-        global system
-        user = User(name = "asddghj", email = "asljfbd@gmail.com", role = Role.get_by_id(2))
-        session = Session(user = user)
-        admin_users = filter(lambda x: x.role == Role.get_by_id(1), system.user_set)
-        admin_user = admin_users[0]
-        admin_session = Session(user = admin_user)
-        system.session_set.append(admin_session)
-        #global system
-        system.add_user(user,admin_session)
-        #old_session_set_length = len(system.session_set)
-        #system.add_session(user)
-        session = Session(user = user)
-        #system.del_session(user)
-        #new_session_set_length = len(system.session_set)
-        #self.assertEquals(new_session_set_length, old_session_set_length)
-        with self.assertRaises(ConstraintError):
-            system.del_session(user, session)
-        #tearDown(system)
-    
 #+END_SRC
 **** show_sessions
      
@@ -1963,5 +1623,3 @@ class TestSystem(TestCase):
 if __name__ == '__main__':
     unittest.main()
 #+END_SRC
-
-
