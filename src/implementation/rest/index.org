@@ -691,24 +691,9 @@ class TestUser(TestCase):
                      role=role2)
 
         user2.save()
-        
-        system.session_set = []
-        system.user_set = []
-
-        system.get_users_from_database()
-        #s=Session(user=user1)
-        system.add_session(user1)
-        payload = {'session': 'admin@xyz.com'}
-
-        headers = {'content-type': 'application/json'}
-
-        response = self.client.delete("/users/2",
-                                      data=json.dumps(payload),
-                                      headers=headers)
-
-        self.assertEqual(response.status_code, 200)
-
-
+        r = self.client.delete('/users/1')
+        result = json.loads(r.data)
+        self.assertEquals(len(result), 1)
 #+END_SRC
 
 *** test_create_role
